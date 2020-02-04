@@ -1,0 +1,55 @@
+日线文件中，每32字节（32bytes）为一天的记录。
+　　每4个字节为一项数据：
+　　第1项，交易日期
+　　第2项，开盘价*100
+　　第3项，最高价*100
+　　第4项，最低价*100
+　　第5项，收盘价*100
+　　第6项，成交金额
+　　第7项，成交量
+　　第8项，未使用
+
+.day文件的格式为：
+{                 C++             python          unpack 参数
+日期：          unsigned int       integer             I
+开盘价*100      unsigned int       integer             I
+最高价*100      unsigned int       integer             I
+最低价*100      unsigned int       integer             I
+收盘价*100      unsigned int       integer             I
+成交额            float             float              f
+成交量          unsigned int       integer             I
+保留值          unsigned int       integer             I
+}
+
+通达信5分钟线*.lc5文件和*.lc1文件
+    文件名即股票代码
+    每32个字节为一个5分钟数据，每字段内低字节在前 时间日期合成4字节
+    00 ~ 01 字节：日期，整型，设其值为num，则日期计算方法为：
+                  year=floor(num/2048)+2004;
+                  month=floor(mod(num,2048)/100);
+                  day=mod(mod(num,2048),100);
+    # 计算日期 floor() 返回数字的下舍整数 如 math.floor(100.72)  输出 100.0 相当于取整
+    ss = str(int(a[0] / 2048) + 2004) + '-' + str(int(a[0] % 2048 / 100)).zfill(2) + '-' + str(
+         a[0] % 2048 % 100).zfill(2), str(int(a[1] / 60)).zfill(2) + ':' + str(a[1] % 60).zfill(2) + ':00'
+    02 ~ 03 字节： 从0点开始至目前的分钟数，整型
+
+    04 ~ 07 字节：开盘价，float型
+    08 ~ 11 字节：最高价，float型
+    12 ~ 15 字节：最低价，float型
+    16 ~ 19 字节：收盘价，float型
+    20 ~ 23 字节：成交额，float型
+    24 ~ 27 字节：成交量（股），整型
+    28 ~ 31 字节：（保留）
+
+.lc5文件的格式为：
+{                 C++             python          unpack 参数
+日期：          unsigned short     integer             H
+时间：          unsigned short     integer             H
+开盘价*100        float             float              f
+最高价*100        float             float              f
+最低价*100        float             float              f
+收盘价*100        float             float              f
+成交额            float             float              f
+成交量          unsigned int       integer             I
+保留值          unsigned int       integer             I
+}
